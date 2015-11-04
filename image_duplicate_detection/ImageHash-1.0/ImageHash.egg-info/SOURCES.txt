@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.rst
+find_similar_images.py
+setup.cfg
+setup.py
+ImageHash.egg-info/PKG-INFO
+ImageHash.egg-info/SOURCES.txt
+ImageHash.egg-info/dependency_links.txt
+ImageHash.egg-info/requires.txt
+ImageHash.egg-info/top_level.txt
+imagehash/__init__.py
