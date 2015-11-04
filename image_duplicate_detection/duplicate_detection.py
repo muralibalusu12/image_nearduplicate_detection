@@ -1,6 +1,6 @@
 
  
-import os, glob	#Importing necessary headfiles
+import os, glob	#Importing necessary headfiles  '''
 import Image
 import hashlib
 import shutil
@@ -22,11 +22,28 @@ def findduplicates(dataset_path):	#function to find the exact duplicates of an i
             duplicatelist.append(fileid)
         else:
             hashdict[filehash]=fileid
+    for imgfile in glob.glob(dataset_path + os.sep +"*.png"):
+        filen, ext = os.path.splitext(imgfile)
+        fileid = filen.split(os.sep)
+        filehash = image_hash(imgfile)
+        if hashdict.has_key(filehash):
+            duplicatelist.append(fileid)
+        else:
+            hashdict[filehash]=fileid
     return duplicatelist, hashdict
 
 def findnearduplicates(dataset_path):	#function to find near duplicates - uses perceptual hash from the imagehash module, returns both the duplicates list as well as the hashdict
     duplicatelist=[]
     for imgfile in glob.glob(dataset_path + os.sep +"*.jpg"):
+        filen, ext = os.path.splitext(imgfile)
+        fileid = filen.split(os.sep)
+        img = Image.open(imgfile)
+        filehash = str(imagehash.dhash(img))
+        if hashdict.has_key(filehash):
+            duplicatelist.append(fileid)
+        else:
+            hashdict[filehash]=fileid
+    for imgfile in glob.glob(dataset_path + os.sep +"*.png"):
         filen, ext = os.path.splitext(imgfile)
         fileid = filen.split(os.sep)
         img = Image.open(imgfile)
@@ -45,6 +62,10 @@ def writeduplicates(dataset_path,duplicatelist):	#function to copy all the dupli
             f.write(dataset_path + os.sep + imgfileid[-1] + '.jpg')
             f.write('\n')
             shutil.copy(os.path.join(dataset_path+os.sep, imgfileid[-1] + '.jpg') , os.path.join(destin_path, imgfileid[-1] + '.jpg'))
+        elif os.path.isfile(os.path.join(dataset_path+os.sep, imgfileid[-1] + '.png')):
+            f.write(dataset_path + os.sep + imgfileid[-1] + '.png')
+            f.write('\n')
+            shutil.copy(os.path.join(dataset_path+os.sep, imgfileid[-1] + '.png') , os.path.join(destin_path, imgfileid[-1] + '.png'))
     f.close()
 
 def writefinal(dataset_path,hashdict):	#function to copy all the unique images from the dataset into a separate folder and write down their original locations in file
@@ -55,6 +76,10 @@ def writefinal(dataset_path,hashdict):	#function to copy all the unique images f
             f.write(dataset_path + os.sep + value[-1] + '.jpg')
             f.write('\n')
             shutil.copy(os.path.join(dataset_path, value[-1] + '.jpg') , os.path.join(destin_path, value[-1] + '.jpg'))
+        elif os.path.isfile(os.path.join(dataset_path, value[-1] + '.png')):
+            f.write(dataset_path + os.sep + value[-1] + '.png')
+            f.write('\n')
+            shutil.copy(os.path.join(dataset_path, value[-1] + '.png') , os.path.join(destin_path, value[-1] + '.png'))
     f.close()
 
 def main():	#main function takes input whether to find exact or near duplicates, can continuously keep adding images as new datasets are given
